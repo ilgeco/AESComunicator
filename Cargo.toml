@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 serialport = "4.2.0"
 base64 = "0.22.0"
+openssl = { version = "0.10"}
