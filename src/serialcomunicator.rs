@@ -258,16 +258,21 @@ fn process_ascii_lines<U>(
 where
     U: Write + 'static + Send + Sync,
 {
-    while dequeue.contains(&b'\n') {
+    // while dequeue.contains(&b'\n') {
+    while !dequeue.is_empty() {
         let mut tmp_s = String::new();
+        tmp_s.push('a');
         while let Some(b'\x00') = dequeue.front() {
             dequeue.pop_front();
         }
 
-        if let Ok(_) = dequeue.read_line(&mut tmp_s) {
-            lines.push_back(tmp_s);
-        } else {
-            break;
+        unsafe {
+            if let Ok(_) = dequeue.read_exact(&mut tmp_s.as_bytes_mut()) {
+                tmp_s.push('\n');
+                lines.push_back(tmp_s);
+            } else {
+                break;
+            }
         }
     }
 
